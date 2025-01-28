@@ -1,4 +1,7 @@
 def can_build(env, platform):
+    if platform == "ios":
+        return env.get("visionos_simulator") or env.get("visionos")
+        return True
     if platform in ("linuxbsd", "windows", "android", "macos"):
         return not env["disable_xr"]
     else:
