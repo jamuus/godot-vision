@@ -30,6 +30,7 @@
 
 #pragma once
 
+#if !defined(VISIONOS)
 #import <UIKit/UIKit.h>
 
 @class GodotView;
@@ -42,3 +43,4 @@
 @property(nonatomic, readonly, strong) GodotKeyboardInputView *keyboardView;
 
 @end
+#endif

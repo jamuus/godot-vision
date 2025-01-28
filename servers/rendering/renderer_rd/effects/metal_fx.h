@@ -31,6 +31,7 @@
 #pragma once
 
 #ifdef METAL_ENABLED
+#ifndef VISIONOS_SIMULATOR
 
 #include "spatial_upscaler.h"
 
@@ -177,3 +178,6 @@ public:
 } //namespace RendererRD
 
 #endif // METAL_ENABLED
+#endif // VISIONOS
+
+#endif // METAL_FX_RD_H

@@ -30,6 +30,7 @@
 
 #pragma once
 
+#import "godot_vision_view.h"
 #import <OpenGLES/EAGLDrawable.h>
 #import <QuartzCore/QuartzCore.h>
 
@@ -42,6 +43,10 @@
 
 @end
 
+#if defined (VISIONOS)
+@interface GodotMetalLayer : GodotView <DisplayLayer>
+@end
+#else
 // An ugly workaround for iOS simulator
 #if defined(TARGET_OS_SIMULATOR) && TARGET_OS_SIMULATOR
 #if defined(__IPHONE_13_0)
@@ -54,8 +59,10 @@ API_AVAILABLE(ios(13.0))
 @interface GodotMetalLayer : CAMetalLayer <DisplayLayer>
 #endif
 @end
-
+#if defined(OPENGL_DISABLED)
+#else
 API_DEPRECATED("OpenGLES is deprecated", ios(2.0, 12.0))
 @interface GodotOpenGLLayer : CAEAGLLayer <DisplayLayer>
-
 @end
+#endif
+#endif

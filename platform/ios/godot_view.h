@@ -30,6 +30,7 @@
 
 #pragma once
 
+#if !defined(VISIONOS)
 #import <UIKit/UIKit.h>
 
 class String;
@@ -60,5 +61,9 @@ class String;
 - (CALayer<DisplayLayer> *)initializeRenderingForDriver:(NSString *)driverName;
 - (void)stopRendering;
 - (void)startRendering;
+- (CGSize)screen_get_size:(int)p_screen;
+- (CGRect)get_display_safe_area;
 
 @end
+
+#endif // !VISIONOS
