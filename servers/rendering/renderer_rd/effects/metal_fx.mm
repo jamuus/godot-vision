@@ -126,7 +126,6 @@ MFXSpatialContext *MFXSpatialEffect::create_context(CreateParams p_params) const
 
 #pragma mark - Temporal Scaler
 
-
 #ifndef VISIONOS
 
 MFXTemporalContext::~MFXTemporalContext() {}
