@@ -342,6 +342,7 @@ void MobileVRInterface::set_vrs_strength(float p_vrs_strength) {
 }
 
 uint32_t MobileVRInterface::get_view_count() {
+    print_line("MobileVRInterface eh");
 	// needs stereo...
 	return 2;
 }

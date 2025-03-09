@@ -256,7 +256,7 @@ static const float earth_gravity = 9.80665;
 
 - (void)drawView {
 	if (!self.isActive) {
-		print_verbose("Draw view not active!");
+		// print_verbose("Draw view not active!");
 		return;
 	}
 

@@ -93,12 +93,7 @@ public:
 	// Platform-specific data for the Windows embedded in this driver.
 	struct WindowPlatformData {
 #ifdef __OBJC__
-#ifdef VISIONOS
-		GodotView *__unsafe_unretained layer;
-		;
-#else
 		CAMetalLayer *__unsafe_unretained layer;
-#endif
 #else
 		void *layer;
 #endif

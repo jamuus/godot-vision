@@ -71,11 +71,7 @@ DisplayServerIOS::DisplayServerIOS(const String &p_rendering_driver, WindowMode 
 	rendering_context = nullptr;
 	rendering_device = nullptr;
 
-#if VISIONOS
-	GodotView *layer = nullptr;
-#else
 	CALayer *layer = nullptr;
-#endif
 
 	union {
 #ifdef VULKAN_ENABLED
@@ -103,11 +99,7 @@ DisplayServerIOS::DisplayServerIOS(const String &p_rendering_driver, WindowMode 
 	if (rendering_driver == "metal") {
 		if (@available(iOS 14.0, *)) {
 			layer = [AppDelegate.viewController.godotView initializeRenderingForDriver:@"metal"];
-#if VISIONOS
-			wpd.metal.layer = (GodotView *)layer;
-#else
 			wpd.metal.layer = (CAMetalLayer *)layer;
-#endif
 			rendering_context = memnew(RenderingContextDriverMetal);
 		} else {
 			OS::get_singleton()->alert("Metal is only supported on iOS 14.0 and later.");

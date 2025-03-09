@@ -904,6 +904,7 @@ Error RenderingDeviceDriverMetal::command_queue_execute_and_present(CommandQueue
 		}];
 	}
 
+    // print_line("p_swap_chains.size():", p_swap_chains.size());
 	for (uint32_t i = 0; i < p_swap_chains.size(); i++) {
 		SwapChain *swap_chain = (SwapChain *)(p_swap_chains[i].id);
 		RenderingContextDriverMetal::Surface *metal_surface = (RenderingContextDriverMetal::Surface *)(swap_chain->surface);
@@ -943,9 +944,9 @@ void RenderingDeviceDriverMetal::command_pool_free(CommandPoolID p_cmd_pool) {
 
 // ----- BUFFER -----
 
-RDD::CommandBufferID RenderingDeviceDriverMetal::command_buffer_create(CommandPoolID p_cmd_pool) {
+RDD::CommandBufferID RenderingDeviceDriverMetal::command_buffer_create(CommandPoolID p_cmd_pool, String label) {
 	id<MTLCommandQueue> queue = rid::get(p_cmd_pool);
-	MDCommandBuffer *obj = new MDCommandBuffer(queue, this);
+	MDCommandBuffer *obj = new MDCommandBuffer(queue, this, label);
 	command_buffers.push_back(obj);
 	return CommandBufferID(obj);
 }
@@ -4142,6 +4143,7 @@ Error RenderingDeviceDriverMetal::_create_device() {
 	device = context_driver->get_metal_device();
 
 	device_queue = [device newCommandQueue];
+    [device_queue setLabel:@"godot main queue"];
 	ERR_FAIL_NULL_V(device_queue, ERR_CANT_CREATE);
 
 	device_scope = [MTLCaptureManager.sharedCaptureManager newCaptureScopeWithCommandQueue:device_queue];

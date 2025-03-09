@@ -180,4 +180,3 @@ public:
 #endif // METAL_ENABLED
 #endif // VISIONOS
 
-#endif // METAL_FX_RD_H

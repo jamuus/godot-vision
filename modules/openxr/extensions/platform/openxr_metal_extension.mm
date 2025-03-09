@@ -217,12 +217,12 @@ bool OpenXRMetalExtension::get_swapchain_image_data(XrSwapchain p_swapchain, int
 			format = RenderingDevice::DATA_FORMAT_D32_SFLOAT;
 			usage_flags |= RenderingDevice::TEXTURE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 			break;
-#ifndef VISIONOS
 		case MTLPixelFormatRGBA16Float:
-			format = RenderingDevice::DATA_FORMAT_R16_SFLOAT;
+			format = RenderingDevice::DATA_FORMAT_R16G16B16A16_SFLOAT;
 			// DXGI_FORMAT_R16_TYPELESS, DXGI_FORMAT_R16_FLOAT
 			usage_flags |= RenderingDevice::TEXTURE_USAGE_COLOR_ATTACHMENT_BIT;
 			break;
+#ifndef VISIONOS
 		case MTLPixelFormatDepth24Unorm_Stencil8:
 			format = RenderingDevice::DATA_FORMAT_D24_UNORM_S8_UINT;
 			usage_flags |= RenderingDevice::TEXTURE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
@@ -234,7 +234,7 @@ bool OpenXRMetalExtension::get_swapchain_image_data(XrSwapchain p_swapchain, int
 			break;
 		default:
 			// Continue with our default value.
-			print_line("OpenXR: Unsupported swapchain format", p_swapchain_format);
+			print_line("OpenXR: Unsupported swapchain format", get_swapchain_format_name(p_swapchain_format));
 			break;
 	}
 

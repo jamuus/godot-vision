@@ -61,12 +61,12 @@
 
 @property(assign, readonly, nonatomic) CGRect bounds;
 
-- (GodotView<DisplayLayer> *)initializeRenderingForDriver:(NSString *)driverName;
+- (CALayer<DisplayLayer> *)initializeRenderingForDriver:(NSString *)driverName;
 - (void)stopRendering;
 - (void)startRendering;
 - (void)drawView;
-- (BOOL)setup:(cp_layer_renderer_t)renderer;
-- (CGSize)screen_get_size:(int)p_screen;
+- (BOOL)setup;
+// - (CGSize)screen_get_size:(int)p_screen;
 - (CGRect)get_display_safe_area;
 
 @end
