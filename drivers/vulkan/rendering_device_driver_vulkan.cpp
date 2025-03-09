@@ -2908,7 +2908,7 @@ void RenderingDeviceDriverVulkan::command_pool_free(CommandPoolID p_cmd_pool) {
 
 // ----- BUFFER -----
 
-RDD::CommandBufferID RenderingDeviceDriverVulkan::command_buffer_create(CommandPoolID p_cmd_pool) {
+RDD::CommandBufferID RenderingDeviceDriverVulkan::command_buffer_create(CommandPoolID p_cmd_pool, String label) {
 	DEV_ASSERT(p_cmd_pool);
 
 	CommandPool *command_pool = (CommandPool *)(p_cmd_pool.id);

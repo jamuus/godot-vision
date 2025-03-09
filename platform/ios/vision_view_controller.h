@@ -53,6 +53,6 @@
 - (void)presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion;
 - (void)viewDidAppear;
 - (void)runLoop;
-- (BOOL)setup:(cp_layer_renderer_t)renderer;
+- (BOOL)setup;
 @end
 #endif

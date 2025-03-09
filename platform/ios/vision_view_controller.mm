@@ -46,19 +46,14 @@
 #import <GameController/GameController.h>
 
 @interface RenderThread : NSThread {
-	cp_layer_renderer_t _layerRenderer;
-	// ViewController * _viewController;
 }
 
-- (instancetype)initWithLayerRenderer:(cp_layer_renderer_t)layerRenderer;
+- (instancetype)init:(cp_layer_renderer_t)layerRenderer;
 @end
 @implementation RenderThread
 
-- (instancetype)initWithLayerRenderer:(cp_layer_renderer_t)layerRenderer {
-	if (self = [self init]) {
-		_layerRenderer = layerRenderer;
-		// _viewController = [AppDelegate viewController];
-	}
+- (instancetype)init:(cp_layer_renderer_t)layerRenderer {
+	self = [self init];
 	return self;
 }
 
@@ -73,7 +68,7 @@
 @property(strong, nonatomic) GodotViewRenderer *renderer;
 @property(strong, nonatomic) GodotKeyboardInputView *keyboardView;
 @property(strong, readwrite, nonatomic) GodotView *view;
-@property(nonatomic, assign) cp_layer_renderer_t __unsafe_unretained layerRenderer;
+// @property(nonatomic, assign) cp_layer_renderer_t __unsafe_unretained layerRenderer;
 
 // @property(strong, nonatomic) UIView *godotLoadingOverlay;
 
@@ -84,105 +79,34 @@
 - (GodotView *)godotView {
 	return (GodotView *)self.view;
 }
-- (BOOL)setup:(cp_layer_renderer_t)renderer {
-	self.layerRenderer = renderer;
-	RenderThread *renderThread = [[RenderThread alloc] initWithLayerRenderer:renderer];
+- (BOOL)setup {
+	RenderThread *renderThread = [[RenderThread alloc] init:nil];
 	renderThread.name = @"Spatial Renderer Thread";
 	[renderThread start];
 	return true;
 }
 
 - (void)presentViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion {
-	// [self.swiftController = presentViewController:viewControllerToPresent];
-	//TODO: Send this to the swift code
 }
 
 - (void)viewDidAppear {
-	[self.swiftController setImmersiveSpace:true];
+    print_line("viewDidAppear");
 }
 
 bool _running = true;
 - (void)runLoop {
-	[self.view setup:self.layerRenderer];
+	[self.view setup];
 	while (_running) {
 		@autoreleasepool {
-			switch (cp_layer_renderer_get_state(self.layerRenderer)) {
-				case cp_layer_renderer_state_paused:
-					cp_layer_renderer_wait_until_running(self.layerRenderer);
-					break;
-
-				case cp_layer_renderer_state_running:
-					[self.view drawView];
-					break;
-
-				case cp_layer_renderer_state_invalidated:
-					_running = false;
-					break;
-			}
+			[self.view drawView];
 		}
 	}
 }
 
 - (void)pressesBegan:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
-	// [super pressesBegan:presses withEvent:event];
-
-	if (!DisplayServerIOS::get_singleton() || DisplayServerIOS::get_singleton()->is_keyboard_active()) {
-		return;
-	}
-	if (@available(iOS 13.4, *)) {
-		for (UIPress *press in presses) {
-			String u32lbl = String::utf8([press.key.charactersIgnoringModifiers UTF8String]);
-			String u32text = String::utf8([press.key.characters UTF8String]);
-			Key key = KeyMappingIOS::remap_key(press.key.keyCode);
-
-			if (press.key.keyCode == 0 && u32text.is_empty() && u32lbl.is_empty()) {
-				continue;
-			}
-
-			char32_t us = 0;
-			if (!u32lbl.is_empty() && !u32lbl.begins_with("UIKey")) {
-				us = u32lbl[0];
-			}
-
-			KeyLocation location = KeyMappingIOS::key_location(press.key.keyCode);
-
-			if (!u32text.is_empty() && !u32text.begins_with("UIKey")) {
-				for (int i = 0; i < u32text.length(); i++) {
-					const char32_t c = u32text[i];
-					DisplayServerIOS::get_singleton()->key(fix_keycode(us, key), c, fix_key_label(us, key), key, press.key.modifierFlags, true, location);
-				}
-			} else {
-				DisplayServerIOS::get_singleton()->key(fix_keycode(us, key), 0, fix_key_label(us, key), key, press.key.modifierFlags, true, location);
-			}
-		}
-	}
 }
 
 - (void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
-	// [super pressesEnded:presses withEvent:event];
-
-	if (!DisplayServerIOS::get_singleton() || DisplayServerIOS::get_singleton()->is_keyboard_active()) {
-		return;
-	}
-	if (@available(iOS 13.4, *)) {
-		for (UIPress *press in presses) {
-			String u32lbl = String::utf8([press.key.charactersIgnoringModifiers UTF8String]);
-			Key key = KeyMappingIOS::remap_key(press.key.keyCode);
-
-			if (press.key.keyCode == 0 && u32lbl.is_empty()) {
-				continue;
-			}
-
-			char32_t us = 0;
-			if (!u32lbl.is_empty() && !u32lbl.begins_with("UIKey")) {
-				us = u32lbl[0];
-			}
-
-			KeyLocation location = KeyMappingIOS::key_location(press.key.keyCode);
-
-			DisplayServerIOS::get_singleton()->key(fix_keycode(us, key), 0, fix_key_label(us, key), key, press.key.modifierFlags, false, location);
-		}
-	}
 }
 
 - (void)loadView {
@@ -194,30 +118,9 @@ bool _running = true;
 
 	view.renderer = self.renderer;
 	view.delegate = self;
-	[self observeKeyboard];
-}
-
-- (void)observeKeyboard {
-	self.keyboardView = [GodotKeyboardInputView new];
-	//TODO: Figure out the keyboard view
-	// [self.view addSubview:self.keyboardView];
-
-	[[NSNotificationCenter defaultCenter]
-			addObserver:self
-			   selector:@selector(keyboardOnScreen:)
-				   name:UIKeyboardDidShowNotification
-				 object:nil];
-	[[NSNotificationCenter defaultCenter]
-			addObserver:self
-			   selector:@selector(keyboardHidden:)
-				   name:UIKeyboardDidHideNotification
-				 object:nil];
 }
 
 - (BOOL)godotViewFinishedSetup:(GodotView *)view {
-	if (self.swiftController) {
-		[self.swiftController finishedLoading];
-	}
 	return YES;
 }
 
@@ -229,26 +132,10 @@ bool _running = true;
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-// MARK: Orientation
-
-// MARK: Keyboard
-
 - (void)keyboardOnScreen:(NSNotification *)notification {
-	// NSDictionary *info = notification.userInfo;
-	// NSValue *value = info[UIKeyboardFrameEndUserInfoKey];
-
-	// CGRect rawFrame = [value CGRectValue];
-	// CGRect keyboardFrame = [self.view convertRect:rawFrame fromView:nil];
-
-	// if (DisplayServerIOS::get_singleton()) {
-	// 	DisplayServerIOS::get_singleton()->virtual_keyboard_set_height(keyboardFrame.size.height);
-	// }
 }
 
 - (void)keyboardHidden:(NSNotification *)notification {
-	if (DisplayServerIOS::get_singleton()) {
-		DisplayServerIOS::get_singleton()->virtual_keyboard_set_height(0);
-	}
 }
 
 @end

@@ -75,24 +75,19 @@
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 //#endif
 
-@property(strong, nonatomic) UIWindow *window;
-@property(strong, class, readonly, nonatomic) ViewController *viewController;
+// @property(strong, nonatomic) UIWindow *window;
+// @property(strong, class, readonly, nonatomic) ViewController *viewController;
 
 @end
 
 @protocol SwiftVisionController <NSObject>
 @required
-- (void)finishedLoading;
-- (void)setImmersiveSpace:(bool)immersive;
-- (void)presentViewController:(UIViewController *)viewControllerToPresent;
 @end
 
 @interface ViewController : NSObject
 
 @property(nonatomic, readwrite) id<SwiftVisionController> swiftController;
-- (void)viewDidAppear;
-//-(void)runLoop;
-- (BOOL)setup:(cp_layer_renderer_t)renderer;
+- (BOOL)setup;
 
 @end
 #endif

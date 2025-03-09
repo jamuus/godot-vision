@@ -1010,8 +1010,7 @@ Size2 OpenXRInterface::get_render_target_size() {
 }
 
 uint32_t OpenXRInterface::get_view_count() {
-	// TODO set this based on our configuration
-	return 2;
+	return openxr_api->get_view_count();
 }
 
 void OpenXRInterface::_set_default_pos(Transform3D &p_transform, double p_world_scale, uint64_t p_eye) {
