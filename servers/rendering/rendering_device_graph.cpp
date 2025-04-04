@@ -1009,7 +1009,7 @@ void RenderingDeviceGraph::_run_render_commands(int32_t p_level, const RecordedC
 					driver->command_buffer_end(r_command_buffer);
 
 					while (r_command_buffer_pool.buffers_used >= r_command_buffer_pool.buffers.size()) {
-						RDD::CommandBufferID command_buffer = driver->command_buffer_create(r_command_buffer_pool.pool, "TYPE_COMPUTE_LIST");
+						RDD::CommandBufferID command_buffer = driver->command_buffer_create(r_command_buffer_pool.pool);
 						RDD::SemaphoreID command_semaphore = driver->semaphore_create();
 						r_command_buffer_pool.buffers.push_back(command_buffer);
 						r_command_buffer_pool.semaphores.push_back(command_semaphore);
@@ -1037,7 +1037,7 @@ void RenderingDeviceGraph::_run_render_commands(int32_t p_level, const RecordedC
 					driver->command_buffer_end(r_command_buffer);
 
 					while (r_command_buffer_pool.buffers_used >= r_command_buffer_pool.buffers.size()) {
-						RDD::CommandBufferID command_buffer = driver->command_buffer_create(r_command_buffer_pool.pool, "TYPE_DRAW_LIST");
+						RDD::CommandBufferID command_buffer = driver->command_buffer_create(r_command_buffer_pool.pool);
 						RDD::SemaphoreID command_semaphore = driver->semaphore_create();
 						r_command_buffer_pool.buffers.push_back(command_buffer);
 						r_command_buffer_pool.semaphores.push_back(command_semaphore);
@@ -1551,7 +1551,7 @@ void RenderingDeviceGraph::initialize(RDD *p_driver, RenderingContextDriver::Dev
 		for (uint32_t j = 0; j < p_secondary_command_buffers_per_frame; j++) {
 			SecondaryCommandBuffer &secondary = frames[i].secondary_command_buffers[j];
 			secondary.command_pool = driver->command_pool_create(p_secondary_command_queue_family, RDD::COMMAND_BUFFER_TYPE_SECONDARY);
-			secondary.command_buffer = driver->command_buffer_create(secondary.command_pool, "RenderingDeviceGraph");
+			secondary.command_buffer = driver->command_buffer_create(secondary.command_pool);
 			secondary.task = WorkerThreadPool::INVALID_TASK_ID;
 		}
 	}
