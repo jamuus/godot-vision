@@ -108,7 +108,7 @@ def configure(env: "SConsEnvironment"):
         detect_darwin_sdk_path("iossimulator", env)
         env.Append(ASFLAGS=["-mios-simulator-version-min=12.0"])
         env.Append(CCFLAGS=["-mios-simulator-version-min=12.0"])
-        env.Append(CPPDEFINES=["IOS_SIMULATOR"])
+        env.Append(CPPDEFINES=["IOS_SIMULATOR", "METALFX_ENABLED"])
         env.extra_suffix = ".simulator" + env.extra_suffix
     elif env["visionos_simulator"]:
         detect_darwin_sdk_path("ios", env)
@@ -116,7 +116,7 @@ def configure(env: "SConsEnvironment"):
         env.extra_suffix = ".visionos.simulator" + env.extra_suffix
     elif env["visionos"]:
         detect_darwin_sdk_path("ios", env)
-        env.Append(CPPDEFINES=["VISIONOS", "OPENGL_DISABLED", "METAL_ENABLED"])
+        env.Append(CPPDEFINES=["VISIONOS", "OPENGL_DISABLED", "METAL_ENABLED", "METALFX_ENABLED"])
         env.extra_suffix = ".visionos" + env.extra_suffix
     else:
         detect_darwin_sdk_path("ios", env)
@@ -170,11 +170,17 @@ def configure(env: "SConsEnvironment"):
         env.Prepend(
             CPPPATH=[
                 "$IOS_SDK_PATH/System/Library/Frameworks/Metal.framework/Headers",
-                "$IOS_SDK_PATH/System/Library/Frameworks/MetalFX.framework/Headers",
                 "$IOS_SDK_PATH/System/Library/Frameworks/QuartzCore.framework/Headers",
             ]
         )
         env.Prepend(CPPEXTPATH=["#thirdparty/spirv-cross"])
+        if not env["visionos_simulator"]:
+            env.Prepend(
+                CPPPATH=[
+                    "$IOS_SDK_PATH/System/Library/Frameworks/MetalFX.framework/Headers"
+                ]
+            )
+        env.Prepend(CPPPATH=["#thirdparty/spirv-cross"])
 
     if env["vulkan"] and env["ios_simulator"]:
         print_warning("iOS simulator does not support the Vulkan rendering driver")
