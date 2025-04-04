@@ -5635,7 +5635,7 @@ RenderingDevice::TransferWorker *RenderingDevice::_acquire_transfer_worker(uint3
 			transfer_worker = memnew(TransferWorker);
 			transfer_worker->command_fence = driver->fence_create();
 			transfer_worker->command_pool = driver->command_pool_create(transfer_queue_family, RDD::COMMAND_BUFFER_TYPE_PRIMARY);
-			transfer_worker->command_buffer = driver->command_buffer_create(transfer_worker->command_pool, "transfer worker");
+			transfer_worker->command_buffer = driver->command_buffer_create(transfer_worker->command_pool);
 			transfer_worker->index = transfer_worker_pool.size();
 			transfer_worker_pool.push_back(transfer_worker);
 			transfer_worker_operation_used_by_draw.push_back(0);
@@ -6747,7 +6747,7 @@ Error RenderingDevice::initialize(RenderingContextDriver *p_context, DisplayServ
 		// Create command pool, command buffers, semaphores and fences.
 		frames[i].command_pool = driver->command_pool_create(main_queue_family, RDD::COMMAND_BUFFER_TYPE_PRIMARY);
 		ERR_FAIL_COND_V(!frames[i].command_pool, FAILED);
-		frames[i].command_buffer = driver->command_buffer_create(frames[i].command_pool, "frame"+String::num((i)));
+		frames[i].command_buffer = driver->command_buffer_create(frames[i].command_pool);
 		ERR_FAIL_COND_V(!frames[i].command_buffer, FAILED);
 		frames[i].semaphore = driver->semaphore_create();
 		ERR_FAIL_COND_V(!frames[i].semaphore, FAILED);

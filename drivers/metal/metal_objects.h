@@ -317,7 +317,6 @@ private:
 
 	void _end_compute_dispatch();
 	void _end_blit();
-    String label;
 
 #pragma mark - Render
 
@@ -541,8 +540,8 @@ public:
 	void compute_dispatch(uint32_t p_x_groups, uint32_t p_y_groups, uint32_t p_z_groups);
 	void compute_dispatch_indirect(RDD::BufferID p_indirect_buffer, uint64_t p_offset);
 
-	MDCommandBuffer(id<MTLCommandQueue> p_queue, RenderingDeviceDriverMetal *p_device_driver, String label) :
-			device_driver(p_device_driver), queue(p_queue), label(label) {
+	MDCommandBuffer(id<MTLCommandQueue> p_queue, RenderingDeviceDriverMetal *p_device_driver) :
+			device_driver(p_device_driver), queue(p_queue) {
 		type = MDCommandBufferStateType::None;
 	}
 

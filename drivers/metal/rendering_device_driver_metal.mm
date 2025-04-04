@@ -944,9 +944,9 @@ void RenderingDeviceDriverMetal::command_pool_free(CommandPoolID p_cmd_pool) {
 
 // ----- BUFFER -----
 
-RDD::CommandBufferID RenderingDeviceDriverMetal::command_buffer_create(CommandPoolID p_cmd_pool, String label) {
+RDD::CommandBufferID RenderingDeviceDriverMetal::command_buffer_create(CommandPoolID p_cmd_pool) {
 	id<MTLCommandQueue> queue = rid::get(p_cmd_pool);
-	MDCommandBuffer *obj = new MDCommandBuffer(queue, this, label);
+	MDCommandBuffer *obj = new MDCommandBuffer(queue, this);
 	command_buffers.push_back(obj);
 	return CommandBufferID(obj);
 }
