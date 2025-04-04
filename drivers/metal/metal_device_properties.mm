@@ -51,7 +51,7 @@
 #import "metal_device_properties.h"
 
 #import <Metal/Metal.h>
-#if !VISIONOS_SIMULATOR
+#if METALFX_ENABLED
 #import <MetalFX/MetalFX.h>
 #endif
 #import <spirv_cross.hpp>
@@ -132,9 +132,9 @@ void MetalDeviceProperties::init_features(id<MTLDevice> p_device) {
 	}
 
 	if (@available(macOS 13.0, iOS 16.0, tvOS 16.0, *)) {
-#if !VISIONOS_SIMULATOR
+#if METALFX_ENABLED
 		features.metal_fx_spatial = [MTLFXSpatialScalerDescriptor supportsDevice:p_device];
-#if !VISIONOS
+#if !VISIONOS // TODO
 		features.metal_fx_temporal = [MTLFXTemporalScalerDescriptor supportsDevice:p_device];
 #endif
 #endif
@@ -339,19 +339,17 @@ void MetalDeviceProperties::init_limits(id<MTLDevice> p_device) {
 #endif
 
 	limits.maxDrawIndexedIndexValue = std::numeric_limits<uint32_t>::max() - 1;
-#if defined(VISIONOS)
-	limits.temporalScalerInputContentMinScale = 1.0;
-	limits.temporalScalerInputContentMaxScale = 3.0;
-#else
-	if (@available(macOS 14.0, iOS 17.0, tvOS 17.0, visionOS 1.0, *)) {
+#if !VISIONOS
+	if (@available(macOS 14.0, iOS 17.0, tvOS 17.0, *)) {
 		limits.temporalScalerInputContentMinScale = (double)[MTLFXTemporalScalerDescriptor supportedInputContentMinScaleForDevice:p_device];
 		limits.temporalScalerInputContentMaxScale = (double)[MTLFXTemporalScalerDescriptor supportedInputContentMaxScaleForDevice:p_device];
-	} else {
+	} else
+#endif
+	{
 		// Defaults taken from macOS 14+
 		limits.temporalScalerInputContentMinScale = 1.0;
 		limits.temporalScalerInputContentMaxScale = 3.0;
 	}
-#endif
 }
 
 MetalDeviceProperties::MetalDeviceProperties(id<MTLDevice> p_device) {
