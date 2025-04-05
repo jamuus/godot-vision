@@ -904,7 +904,6 @@ Error RenderingDeviceDriverMetal::command_queue_execute_and_present(CommandQueue
 		}];
 	}
 
-    // print_line("p_swap_chains.size():", p_swap_chains.size());
 	for (uint32_t i = 0; i < p_swap_chains.size(); i++) {
 		SwapChain *swap_chain = (SwapChain *)(p_swap_chains[i].id);
 		RenderingContextDriverMetal::Surface *metal_surface = (RenderingContextDriverMetal::Surface *)(swap_chain->surface);

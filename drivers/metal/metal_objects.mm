@@ -1259,7 +1259,6 @@ void MDUniformSet::bind_uniforms_direct(MDShader *p_shader, MDCommandBuffer::Ren
 }
 
 void MDUniformSet::bind_uniforms(MDShader *p_shader, MDCommandBuffer::RenderState &p_state, uint32_t p_set_index) {
-    // HERE
 	if (p_shader->uses_argument_buffers) {
 		bind_uniforms_argument_buffers(p_shader, p_state, p_set_index);
 	} else {

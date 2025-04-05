@@ -83,27 +83,15 @@ void RenderingContextDriverMetal::driver_free(RenderingDeviceDriver *p_driver) {
 }
 
 class API_AVAILABLE(macos(11.0), ios(14.0), tvos(14.0)) SurfaceLayer : public RenderingContextDriverMetal::Surface {
-// #if VISIONOS
-// 	GodotView *__unsafe_unretained layer = nil;
-// #else
 	CAMetalLayer *__unsafe_unretained layer = nil;
-// #endif
 	LocalVector<MDFrameBuffer> frame_buffers;
-// #if VISIONOS
-// 	LocalVector<cp_drawable_t> drawables;
-// #else
 	LocalVector<id<MTLDrawable>> drawables;
-// #endif
 	uint32_t rear = -1;
 	uint32_t front = 0;
 	uint32_t count = 0;
 
 public:
-// #if VISIONOS
-// 	SurfaceLayer(GodotView *p_layer, id<MTLDevice> p_device) :
-// #else
 	SurfaceLayer(CAMetalLayer *p_layer, id<MTLDevice> p_device) :
-// #endif
 			Surface(p_device), layer(p_layer) {
 #if VISIONOS
 #else
@@ -162,6 +150,7 @@ public:
 	}
 
 	RDD::FramebufferID acquire_next_frame_buffer() override final {
+#ifndef VISIONOS
 		if (count == frame_buffers.size()) {
 			return RDD::FramebufferID();
 		}
@@ -172,23 +161,15 @@ public:
 		MDFrameBuffer &frame_buffer = frame_buffers[rear];
 		frame_buffer.size = Size2i(width, height);
 
-//For vision OS, I need to request this...
-// #if defined(VISIONOS)
-// 		cp_drawable_t drawable = layer.drawable;
-// #else
 		id<CAMetalDrawable> drawable = layer.nextDrawable;
 		ERR_FAIL_NULL_V_MSG(drawable, RDD::FramebufferID(), "no drawable available");
-// #endif
- 		drawables[rear] = drawable;
-// #if defined(VISIONOS)
-// 		//TODO: Do this for each viewport
-// 		id<MTLTexture> texture = cp_drawable_get_color_texture(drawable, 0);
-// 		frame_buffer.set_texture(0, texture);
-// #else
- 		frame_buffer.set_texture(0, drawable.texture);
-// #endif
+		drawables[rear] = drawable;
+		frame_buffer.set_texture(0, drawable.texture);
 
 		return RDD::FramebufferID(&frame_buffer);
+#else
+		return RDD::FramebufferID();
+#endif
 	}
 
 	void present(MDCommandBuffer *p_cmd_buffer) override final {
@@ -196,23 +177,13 @@ public:
 			return;
 		}
 
-// Release texture and drawable.
-// #if VISIONOS
-// 		frame_buffers[front].unset_texture(0);
-// 		cp_drawable_t drawable = drawables[front];
-// 		drawables[front] = nil;
-// 
-// #else
+		// Release texture and drawable.
 		frame_buffers[front].unset_texture(0);
 		id<MTLDrawable> drawable = drawables[front];
 		drawables[front] = nil;
-// #endif
 
 		count--;
 		front = (front + 1) % frame_buffers.size();
-// 		id<MTLCommandBuffer> commandBuffer = p_cmd_buffer->get_command_buffer();
-// 		cp_drawable_encode_present(drawable, commandBuffer);
-// #else
 #ifndef VISIONOS
 		if (vsync_mode != DisplayServer::VSYNC_DISABLED) {
 			[p_cmd_buffer->get_command_buffer() presentDrawable:drawable afterMinimumDuration:present_minimum_duration];
