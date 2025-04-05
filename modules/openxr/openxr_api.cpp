@@ -796,7 +796,6 @@ bool OpenXRAPI::load_supported_view_configuration_views(XrViewConfigurationType 
 	}
 
 	view_configuration_views.resize(view_count);
-    print_line("OpenXR: loaded ", view_count, " views");
 
 	for (XrViewConfigurationView &view_configuration_view : view_configuration_views) {
 		view_configuration_view.type = XR_TYPE_VIEW_CONFIGURATION_VIEW;
