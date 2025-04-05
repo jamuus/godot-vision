@@ -3523,9 +3523,7 @@ RDD::PipelineID RenderingDeviceDriverMetal::render_pipeline_create(
 
 	// Rasterization.
 	desc.rasterizationEnabled = !p_rasterization_state.discard_primitives;
-#if !VISIONOS_SIMULATOR
 	pipeline->raster_state.clip_mode = p_rasterization_state.enable_depth_clamp ? MTLDepthClipModeClamp : MTLDepthClipModeClip;
-#endif
 	pipeline->raster_state.fill_mode = p_rasterization_state.wireframe ? MTLTriangleFillModeLines : MTLTriangleFillModeFill;
 
 	static const MTLCullMode CULL_MODE[3] = {
