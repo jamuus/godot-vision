@@ -113,9 +113,13 @@ bool PixelFormats::isSupportedOrSubstitutable(DataFormat p_format) {
 	return getDataFormatDesc(p_format).isSupportedOrSubstitutable();
 }
 
+#if VISIONOS // PVRTC deprecated in visionos 2.0
+bool PixelFormats::isPVRTCFormat(MTLPixelFormat p_format) {
+	return false;
+}
+#else
 bool PixelFormats::isPVRTCFormat(MTLPixelFormat p_format) {
 	switch (p_format) {
-#if !VISIONOS
 		case MTLPixelFormatPVRTC_RGBA_2BPP:
 		case MTLPixelFormatPVRTC_RGBA_2BPP_sRGB:
 		case MTLPixelFormatPVRTC_RGBA_4BPP:
@@ -125,11 +129,12 @@ bool PixelFormats::isPVRTCFormat(MTLPixelFormat p_format) {
 		case MTLPixelFormatPVRTC_RGB_4BPP:
 		case MTLPixelFormatPVRTC_RGB_4BPP_sRGB:
 			return true;
-#endif
 		default:
 			return false;
 	}
 }
+#endif
+
 
 MTLFormatType PixelFormats::getFormatType(DataFormat p_format) {
 	return getDataFormatDesc(p_format).formatType;
