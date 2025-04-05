@@ -872,7 +872,7 @@ public:
 		_FORCE_INLINE_ void apply(id<MTLRenderCommandEncoder> __unsafe_unretained p_enc) const {
 			[p_enc setCullMode:cull_mode];
 			[p_enc setTriangleFillMode:fill_mode];
-#ifndef VISIONOS_SIMULATOR
+#ifndef VISIONOS_SIMULATOR // clip or clamp 'is not supported on this device'
 			[p_enc setDepthClipMode:clip_mode];
 #endif
 			[p_enc setFrontFacingWinding:winding];
