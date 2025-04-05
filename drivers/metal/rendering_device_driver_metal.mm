@@ -4190,16 +4190,10 @@ Error RenderingDeviceDriverMetal::initialize(uint32_t p_device_index, uint32_t p
 		print_verbose("- Metal multiview not supported");
 	}
 
-#if defined(VISIONOS)
-	//This check for the GPU Family doesn't work on Vision. However it does support image cube array.
-	return OK;
-#endif
 	// The Metal renderer requires Apple4 family. This is 2017 era A11 chips and newer.
-	if (device_properties->features.highestFamily < MTLGPUFamilyApple4) {
+	if (!device_properties->features.imageCubeArray) {
 		String error_string = vformat("Your Apple GPU does not support the following features, which are required to use Metal-based renderers in Godot:\n\n");
-		if (!device_properties->features.imageCubeArray) {
-			error_string += "- No support for image cube arrays.\n";
-		}
+		error_string += "- No support for image cube arrays.\n";
 
 #if defined(IOS_ENABLED)
 		// iOS platform ports currently don't exit themselves when this method returns `ERR_CANT_CREATE`.
