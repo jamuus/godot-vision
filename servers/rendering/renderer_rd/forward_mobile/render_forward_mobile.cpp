@@ -366,7 +366,7 @@ float RenderForwardMobile::_render_buffers_get_luminance_multiplier() {
 
 RD::DataFormat RenderForwardMobile::_render_buffers_get_color_format() {
 	// Using 32bit buffers enables AFBC on mobile devices which should have a definite performance improvement (MALI G710 and newer support this on 64bit RTs)
-	return RD::DATA_FORMAT_A2B10G10R10_UNORM_PACK32;
+	return RD::DATA_FORMAT_R16G16B16A16_SFLOAT;
 }
 
 bool RenderForwardMobile::_render_buffers_can_be_storage() {
@@ -797,6 +797,10 @@ void RenderForwardMobile::_render_scene(RenderDataRD *p_render_data, const Color
 		// As we're doing opaque and sky in subpasses we don't support this *yet*
 		WARN_PRINT_ONCE("Post opaque rendering effect callback is not supported in the mobile renderer");
 	}
+
+#if VISIONOS
+	using_subpass_post_process = false;
+#endif
 
 	// Using RenderingEffects limits our ability to do subpasses..
 	if (ce_has_pre_transparent) {
