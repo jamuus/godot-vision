@@ -3833,7 +3833,9 @@ void RenderingDeviceDriverMetal::set_object_name(ObjectType p_type, ID p_driver_
 	switch (p_type) {
 		case OBJECT_TYPE_TEXTURE: {
 			id<MTLTexture> tex = rid::get(p_driver_id);
-			tex.label = [NSString stringWithUTF8String:p_name.utf8().get_data()];
+			if (tex.label == nil) {
+				tex.label = [NSString stringWithUTF8String:p_name.utf8().get_data()];
+			}
 		} break;
 		case OBJECT_TYPE_SAMPLER: {
 			// Can't set label after creation.
