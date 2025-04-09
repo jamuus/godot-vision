@@ -21,6 +21,7 @@ BUILD="scons p=ios library_type=shared_library $MODULE_OPTS optimize=size arch=a
 
 if [ "$MODE" == "debug" ]; then
 	$BUILD target=template_debug dev_build=yes debug_symbols=yes
+	# $BUILD target=template_debug dev_build=yes debug_symbols=yes generate_bundle=yes
 elif [ "$MODE" == "release" ]; then
 	$BUILD target=template_release dev_build=no debug_symbols=yes generate_bundle=yes
 else
@@ -28,7 +29,7 @@ else
 	exit 1
 fi
 
-dest="/Users/jamus/Downloads/godot vision build/New Game Project.xcframework"
+# e.g. dest="~/godot vision build/New Game Project.xcframework"
 mkdir -p "$dest"/xros-arm64 "$dest"/xros-arm64_x86_64-simulator
 #I use this to copy it directly into the exported iOS project for quicker iteration
 if [ "$PLATFORM" == "visionos" ]; then

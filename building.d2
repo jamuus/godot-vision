@@ -1,0 +1,90 @@
+direction: down
+
+YourGame: {
+	label:"Godot Project"
+	shape: square
+}
+
+GodotSource: "Godot\nhttps://github.com/jamuus/godot-vision"
+
+GodotEditorBuild: {
+	label:"godot editor"
+	shape:diamond
+}
+LibGodotBuild: {
+	label: "libgodot.a"
+	shape: diamond
+}
+
+ExportPCK: {
+	label: "YourGame.pck"
+	shape: diamond
+}
+OpenVisionSource: "https://github.com/jamuus/OpenVision"
+OpenVisionBuild: {
+	label: "xcodebuild -create-xcframework"
+	shape: diamond
+}
+
+XcodeProject: "xcode template"
+XcodeBuild: {
+	label: "YourGame on VisionOS"
+	shape: diamond
+}
+
+GodotSource -> GodotEditorBuild: build
+GodotSource -> LibGodotBuild: build
+
+RunningEditor: {
+	label:"Godot Editor"
+	shape: circle
+}
+
+YourGame -> RunningEditor: open
+RunningEditor -> ExportPCK: export ios pck
+GodotEditorBuild -> RunningEditor: run
+
+LibGodotBuild -> XcodeProject
+
+ExportPCK -> XcodeProject
+
+OpenVisionDevBuild: {
+	label: "Device build"
+	shape: diamond
+}
+OpenVisionSimBuild: {
+	label: "Simulation build"
+	shape: diamond
+}
+
+OpenVisionSource -> OpenVisionSimBuild: build in xcode
+OpenVisionSource -> OpenVisionDevBuild: build in xcode
+OpenVisionDevBuild -> OpenVisionBuild
+OpenVisionSimBuild -> OpenVisionBuild
+
+GodotSource -> XcodeProject: generate_bundle=yes
+OpenVisionBuild -> XcodeProject
+XcodeProject -> XcodeBuild: build
+
+
+Legend: {
+  shape: rectangle
+  label: "Legend"
+
+  Source: {
+    label: "Source"
+    shape: rectangle
+  }
+
+  Program: {
+    label: "Binary"
+    shape: diamond
+  }
+
+  UI: {
+    label: "UI"
+    shape: circle
+  }
+
+  Source -> Program -> UI
+}
