@@ -365,8 +365,12 @@ float RenderForwardMobile::_render_buffers_get_luminance_multiplier() {
 }
 
 RD::DataFormat RenderForwardMobile::_render_buffers_get_color_format() {
-	// Using 32bit buffers enables AFBC on mobile devices which should have a definite performance improvement (MALI G710 and newer support this on 64bit RTs)
+#ifdef VISIONOS
 	return RD::DATA_FORMAT_R16G16B16A16_SFLOAT;
+#else
+	// Using 32bit buffers enables AFBC on mobile devices which should have a definite performance improvement (MALI G710 and newer support this on 64bit RTs)
+	return RD::DATA_FORMAT_A2B10G10R10_UNORM_PACK32;
+#endif
 }
 
 bool RenderForwardMobile::_render_buffers_can_be_storage() {

@@ -46,7 +46,6 @@ void RendererCompositorRD::blit_render_targets_to_screen(DisplayServer::WindowID
 	RD::DrawListID draw_list = RD::get_singleton()->draw_list_begin_for_screen(p_screen);
 	ERR_FAIL_COND(draw_list == RD::INVALID_ID);
 
-    print_line("p_amount ", p_amount);
 	for (int i = 0; i < p_amount; i++) {
 		RID rd_texture = texture_storage->render_target_get_rd_texture(p_render_targets[i].render_target);
 		ERR_CONTINUE(rd_texture.is_null());
