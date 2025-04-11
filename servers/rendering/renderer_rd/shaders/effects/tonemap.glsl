@@ -536,7 +536,8 @@ void main() {
 
 	float exposure = params.exposure;
 
-#if 0
+// #if 0
+#ifndef SUBPASS
 	if (bool(params.flags & FLAG_USE_AUTO_EXPOSURE)) {
 		exposure *= 1.0 / (texelFetch(source_auto_exposure, ivec2(0, 0), 0).r * params.luminance_multiplier / params.auto_exposure_scale);
 	}
@@ -545,7 +546,8 @@ void main() {
 	color.rgb *= exposure;
 
 	// Early Tonemap & SRGB Conversion
-#if 0
+// #if 0
+#ifndef SUBPASS
 	if (bool(params.flags & FLAG_USE_FXAA)) {
 		// FXAA must be performed before glow to preserve the "bleed" effect of glow.
 		color.rgb = do_fxaa(color.rgb, exposure, uv_interp);
@@ -565,7 +567,8 @@ void main() {
 	if (bool(params.flags & FLAG_CONVERT_TO_SRGB)) {
 		color.rgb = linear_to_srgb(color.rgb); // Regular linear -> SRGB conversion.
 	}
-#if 0
+// #if 0
+#ifndef SUBPASS
 	// Glow
 	if (bool(params.flags & FLAG_USE_GLOW) && params.glow_mode != GLOW_MODE_MIX) {
 		vec3 glow = gather_glow(source_glow, uv_interp) * params.glow_intensity * params.luminance_multiplier;
@@ -585,7 +588,7 @@ void main() {
 
 	// Additional effects
 
-#if 0
+// #if 0
 	if (bool(params.flags & FLAG_USE_BCS)) {
 		color.rgb = apply_bcs(color.rgb, params.bcs);
 	}
@@ -599,7 +602,7 @@ void main() {
 		// Otherwise, we're adding noise to an already-quantized image.
 		color.rgb += screen_space_dither(gl_FragCoord.xy);
 	}
-#endif
+// #endif
 
 	frag_color = color;
 }
